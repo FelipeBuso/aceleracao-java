@@ -6,10 +6,8 @@ import br.com.codenation.exceptions.TimeNaoEncontradoException;
 import br.com.codenation.helpers.SortByJogadorId;
 import br.com.codenation.helpers.SortByMelhorJogador;
 import br.com.codenation.jogadores.Jogador;
-//import br.com.codenation.repositorios.RepositorioTimes;
 import br.com.codenation.times.Time;
 
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,8 +19,6 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 
 	private List<Time> times = new ArrayList<>();
 	private List<Jogador> jogadores = new ArrayList<>();
-
-
 
 	private Time getTime(Long id) {
 		for (Time time: times) {
@@ -69,25 +65,12 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 		if(getJogadorById(idJogador) == null) {
 			throw new JogadorNaoEncontradoException("jogador não encontrado");
 		}
-		Long capitaoId = buscarCapitaoDoTime(jogadorTimeID);
-
-		if(capitaoId != null) {
-			Jogador removerCapitao = getJogadorById(capitaoId);
-			removerCapitao.seteCapitao(false);
-			for (Jogador jogador: jogadores) {
-				if (jogador.getId().equals(removerCapitao.getId())) {
-					jogadores.remove(jogador);
-					jogadores.add(removerCapitao);
-				}
-			}
-		};
-		Jogador eCapitao = getJogadorById(idJogador);
-		eCapitao.seteCapitao(true);
-
 		for (Jogador jogador: jogadores) {
-			if (jogador.getId().equals(eCapitao.getId())) {
-				jogadores.remove(jogador);
-				jogadores.add(eCapitao);
+			if(jogador.getIdTime().equals(jogadorTimeID) && jogador.getId() != idJogador) {
+				jogador.seteCapitao(false);
+			}
+			if(jogador.getIdTime().equals(jogadorTimeID) && jogador.getId().equals(idJogador)) {
+				jogador.seteCapitao(true);
 			}
 		}
 	}

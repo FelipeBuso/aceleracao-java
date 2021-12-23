@@ -1,7 +1,5 @@
 package br.com.codenation;
 
-import br.com.codenation.times.Time;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
