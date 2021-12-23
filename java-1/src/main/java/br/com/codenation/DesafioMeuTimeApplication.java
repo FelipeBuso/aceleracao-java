@@ -1,5 +1,6 @@
 package br.com.codenation;
 
+import br.com.codenation.exceptions.CapitaoNaoInformadoException;
 import br.com.codenation.exceptions.IdentificadorUtilizadoException;
 import br.com.codenation.exceptions.JogadorNaoEncontradoException;
 import br.com.codenation.exceptions.TimeNaoEncontradoException;
@@ -61,10 +62,10 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 	}
 
 	public void definirCapitao(Long idJogador) {
-		Long jogadorTimeID = getJogadorById(idJogador).getIdTime();
 		if(getJogadorById(idJogador) == null) {
 			throw new JogadorNaoEncontradoException("jogador não encontrado");
 		}
+		Long jogadorTimeID = getJogadorById(idJogador).getIdTime();
 		for (Jogador jogador: jogadores) {
 			if(jogador.getIdTime().equals(jogadorTimeID) && jogador.getId() != idJogador) {
 				jogador.seteCapitao(false);
@@ -77,10 +78,14 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 
 	public Long buscarCapitaoDoTime(Long idTime) {
 		if(getTime(idTime) == null) throw new TimeNaoEncontradoException();
+		Long idCapitao = null;
 		for (Jogador jogador: jogadores) {
-			if(jogador.getIdTime().equals(idTime) && jogador.geteCapitao().equals(true)) return jogador.getId();
+			if (jogador.getIdTime().equals(idTime) && jogador.geteCapitao().equals(true)) {
+				idCapitao = jogador.getId();
+			}
 		}
-		return null;
+		if (idCapitao == null) throw new CapitaoNaoInformadoException();
+		return idCapitao;
 	}
 
 	public String buscarNomeJogador(Long idJogador) {
@@ -96,6 +101,7 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 	}
 
 	public List<Long> buscarJogadoresDoTime(Long idTime) {
+		if(getTime(idTime) == null) throw new TimeNaoEncontradoException();
 		Collections.sort(jogadores, new SortByJogadorId());
 		List<Long> jogadoresId = new ArrayList<>();
 		for(Jogador jogador: jogadores) {
@@ -151,6 +157,8 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 
 	public List<Long> buscarTopJogadores(Integer top) {
 		List<Long> topJogadores = new ArrayList<>();
+		if(jogadores.size() == 0 ) return topJogadores;
+
 		Collections.sort(jogadores, new SortByJogadorId());
 		Collections.sort(jogadores, new SortByMelhorJogador());
 		for(int i = 0; i < top; i++) {

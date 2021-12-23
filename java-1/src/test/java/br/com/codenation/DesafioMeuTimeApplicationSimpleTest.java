@@ -32,10 +32,8 @@ public class DesafioMeuTimeApplicationSimpleTest {
         final DesafioMeuTimeApplication desafioMeuTimeApplication = new DesafioMeuTimeApplication();
         desafioMeuTimeApplication.incluirTime(1l, "Teste1", LocalDate.now(), "branco", "branco");
         desafioMeuTimeApplication.incluirJogador(1l, 1l, "Jogador", LocalDate.now(), 1, BigDecimal.TEN);
-        desafioMeuTimeApplication.definirCapitao(1l);
-        desafioMeuTimeApplication.incluirJogador(2l, 1l, "Jogador", LocalDate.now(), 1, BigDecimal.TEN);
         desafioMeuTimeApplication.definirCapitao(2l);
-        assertEquals(new Long(2L), desafioMeuTimeApplication.buscarCapitaoDoTime(1L));
+        assertEquals(new Long(1L), desafioMeuTimeApplication.buscarCapitaoDoTime(1L));
     }
 
     @Test
