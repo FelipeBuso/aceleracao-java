@@ -167,7 +167,13 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 	}
 
 	public List<Long> buscarTopJogadores(Integer top) {
-		throw new UnsupportedOperationException();
+		List<Long> topJogadores = new ArrayList<>();
+		Collections.sort(jogadores, new SortByJogadorId());
+		Collections.sort(jogadores, new SortByMelhorJogador());
+		for(int i = 0; i < top; i++) {
+			topJogadores.add(jogadores.get(i).getId());
+		}
+		return topJogadores;
 	}
 
 }
