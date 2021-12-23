@@ -30,7 +30,7 @@ interface MeuTimeInterface {
 
     Long buscarJogadorMaisVelho(Long idTime);
 
-    List<Time> buscarTimes();
+    List<Long> buscarTimes();
 
     List<Long> buscarTopJogadores(Integer top);
 }

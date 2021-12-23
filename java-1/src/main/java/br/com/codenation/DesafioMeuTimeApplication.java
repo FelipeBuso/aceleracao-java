@@ -6,7 +6,7 @@ import br.com.codenation.exceptions.TimeNaoEncontradoException;
 import br.com.codenation.helpers.SortByJogadorId;
 import br.com.codenation.helpers.SortByMelhorJogador;
 import br.com.codenation.jogadores.Jogador;
-import br.com.codenation.repositorios.RepositorioTimes;
+//import br.com.codenation.repositorios.RepositorioTimes;
 import br.com.codenation.times.Time;
 
 import java.lang.reflect.Array;
@@ -140,8 +140,12 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 		return jogadorMaisVelho.getId();
 	}
 
-	public List<Time> buscarTimes() {
-		return times;
+	public List<Long> buscarTimes() {
+		List<Long> getTimes = new ArrayList<>();
+		for (Time time: times) {
+			getTimes.add(time.getId());
+		}
+		return getTimes;
 	}
 
 	public Long buscarJogadorMaiorSalario(Long idTime) {
@@ -149,18 +153,21 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 		Collections.sort(jogadores, new SortByJogadorId());
 		Jogador jogadorMaiorSalario = jogadores.get(0);
 		for (Jogador jogador: jogadores) {
-			if(jogador.getSalario().compareTo(jogadorMaiorSalario.getSalario()) > 0) {
+			if (jogador.getSalario().compareTo(jogadorMaiorSalario.getSalario()) > 0) {
 				jogadorMaiorSalario = jogador;
 			}
+		}
 			return jogadorMaiorSalario.getId();
 	}
 
-//	public BigDecimal buscarSalarioDoJogador(Long idJogador) {
-//		Jogador buscaSalario = getJogadorById();
-//	}
-//
-//	public List<Long> buscarTopJogadores(Integer top) {
-//		throw new UnsupportedOperationException();
-//	}
+	public BigDecimal buscarSalarioDoJogador(Long idJogador) {
+		if(getJogadorById(idJogador) == null) throw new JogadorNaoEncontradoException("Jogador não encontrado");
+		Jogador buscaSalario = getJogadorById(idJogador);
+		return  buscaSalario.getSalario();
+	}
+
+	public List<Long> buscarTopJogadores(Integer top) {
+		throw new UnsupportedOperationException();
+	}
 
 }
