@@ -1,0 +1,151 @@
+package br.com.codenation;
+
+import br.com.codenation.exceptions.IdentificadorUtilizadoException;
+import br.com.codenation.exceptions.JogadorNaoEncontradoException;
+import br.com.codenation.exceptions.TimeNaoEncontradoException;
+import br.com.codenation.helpers.SortByJogadorId;
+import br.com.codenation.helpers.SortByMelhorJogador;
+import br.com.codenation.jogadores.Jogador;
+import br.com.codenation.repositorios.RepositorioTimes;
+import br.com.codenation.times.Time;
+
+import java.lang.reflect.Array;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+
+public class DesafioMeuTimeApplication implements MeuTimeInterface {
+
+	private List<Time> times = new ArrayList<>();
+	private List<Jogador> jogadores = new ArrayList<>();
+
+
+
+	private Time getTime(Long id) {
+		for (Time time: times) {
+			if(time.getId().equals(id)) {
+				return time;
+			}
+		}
+		return null;
+	}
+
+	private Jogador getJogadorById(Long id) {
+		for (Jogador jogador: jogadores) {
+			if(jogador.getId().equals(id)) {
+				return jogador;
+			}
+		}
+		return null;
+	}
+
+	public void incluirTime(Long id, String nome, LocalDate dataCriacao, String corUniformePrincipal, String corUniformeSecundario) {
+		Time time = new Time(id, nome, dataCriacao,corUniformePrincipal,corUniformeSecundario);
+		if(getTime(id) == null) {
+			times.add(time);
+		} else {
+			throw new IdentificadorUtilizadoException("Time já cadastrado");
+		}
+	}
+
+	public void incluirJogador(Long id, Long idTime, String nome, LocalDate dataNascimento, Integer nivelHabilidade, BigDecimal salario) {
+		Jogador jogador = new Jogador(id, idTime, nome, dataNascimento, nivelHabilidade, salario);
+		if (getTime(idTime) == null) {
+			throw new TimeNaoEncontradoException();
+		} else {
+			if (getJogadorById(id) == null) {
+				jogadores.add(jogador);
+			} else {
+				throw new IdentificadorUtilizadoException("Jogador já cadastrado");
+			}
+		}
+	}
+
+	public void definirCapitao(Long idJogador) {
+		Long jogadorTimeID = getJogadorById(idJogador).getIdTime();
+		if(getJogadorById(idJogador) == null) {
+			throw new JogadorNaoEncontradoException("jogador não encontrado");
+		}
+		Long capitaoId = buscarCapitaoDoTime(jogadorTimeID);
+
+		if(capitaoId != null) {
+			Jogador removerCapitao = getJogadorById(capitaoId);
+			removerCapitao.seteCapitao(false);
+			for (Jogador jogador: jogadores) {
+				if (jogador.getId().equals(removerCapitao.getId())) {
+					jogadores.remove(jogador);
+					jogadores.add(removerCapitao);
+				}
+			}
+		};
+		Jogador eCapitao = getJogadorById(idJogador);
+		eCapitao.seteCapitao(true);
+
+		for (Jogador jogador: jogadores) {
+			if (jogador.getId().equals(eCapitao.getId())) {
+				jogadores.remove(jogador);
+				jogadores.add(eCapitao);
+			}
+		}
+	}
+
+	public Long buscarCapitaoDoTime(Long idTime) {
+		if(getTime(idTime) == null) throw new TimeNaoEncontradoException();
+		for (Jogador jogador: jogadores) {
+			if(jogador.getIdTime().equals(idTime) && jogador.geteCapitao().equals(true)) return jogador.getId();
+		}
+		return null;
+	}
+
+	public String buscarNomeJogador(Long idJogador) {
+		Jogador nomeJogador = getJogadorById(idJogador);
+		if (nomeJogador == null) throw new JogadorNaoEncontradoException("jogador não localizado");
+		return nomeJogador.getNome();
+	}
+
+	public String buscarNomeTime(Long idTime) {
+		Time nomeTime = getTime(idTime);
+		if(nomeTime == null) throw new TimeNaoEncontradoException();
+		return nomeTime.getNome();
+	}
+
+	public List<Long> buscarJogadoresDoTime(Long idTime) {
+		Collections.sort(jogadores, new SortByJogadorId());
+		List<Long> jogadoresId = new ArrayList<>();
+		for(Jogador jogador: jogadores) {
+			jogadoresId.add(jogador.getId());
+		}
+		return jogadoresId;
+	}
+
+	public Long buscarMelhorJogadorDoTime(Long idTime) {
+		if(getTime(idTime) == null) throw new TimeNaoEncontradoException();
+		Collections.sort(jogadores, new SortByMelhorJogador());
+		Jogador melhorJogador = jogadores.get(0);
+		return  melhorJogador.getId();
+	}
+
+	public Long buscarJogadorMaisVelho(Long idTime) {
+		throw new UnsupportedOperationException();
+	}
+
+	public List<Time> buscarTimes() {
+		return times;
+	}
+
+	public Long buscarJogadorMaiorSalario(Long idTime) {
+		throw new UnsupportedOperationException();
+	}
+
+	public BigDecimal buscarSalarioDoJogador(Long idJogador) {
+		throw new UnsupportedOperationException();
+	}
+
+	public List<Long> buscarTopJogadores(Integer top) {
+		throw new UnsupportedOperationException();
+	}
+
+}
