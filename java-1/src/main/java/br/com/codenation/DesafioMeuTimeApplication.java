@@ -129,7 +129,15 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 	}
 
 	public Long buscarJogadorMaisVelho(Long idTime) {
-		throw new UnsupportedOperationException();
+		if(getTime(idTime) == null) throw new TimeNaoEncontradoException();
+		Collections.sort(jogadores, new SortByJogadorId());
+		Jogador jogadorMaisVelho = jogadores.get(0);
+		for (Jogador jogador: jogadores) {
+			if(jogador.getDataNascimento().compareTo(jogadorMaisVelho.getDataNascimento()) < 0) {
+				jogadorMaisVelho = jogador;
+			}
+		}
+		return jogadorMaisVelho.getId();
 	}
 
 	public List<Time> buscarTimes() {
@@ -137,15 +145,22 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 	}
 
 	public Long buscarJogadorMaiorSalario(Long idTime) {
-		throw new UnsupportedOperationException();
+		if(getTime(idTime) == null) throw new TimeNaoEncontradoException();
+		Collections.sort(jogadores, new SortByJogadorId());
+		Jogador jogadorMaiorSalario = jogadores.get(0);
+		for (Jogador jogador: jogadores) {
+			if(jogador.getSalario().compareTo(jogadorMaiorSalario.getSalario()) > 0) {
+				jogadorMaiorSalario = jogador;
+			}
+			return jogadorMaiorSalario.getId();
 	}
 
-	public BigDecimal buscarSalarioDoJogador(Long idJogador) {
-		throw new UnsupportedOperationException();
-	}
-
-	public List<Long> buscarTopJogadores(Integer top) {
-		throw new UnsupportedOperationException();
-	}
+//	public BigDecimal buscarSalarioDoJogador(Long idJogador) {
+//		Jogador buscaSalario = getJogadorById();
+//	}
+//
+//	public List<Long> buscarTopJogadores(Integer top) {
+//		throw new UnsupportedOperationException();
+//	}
 
 }
